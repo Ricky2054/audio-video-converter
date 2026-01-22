@@ -40,6 +40,7 @@ npm run dev
 ```
 http://localhost:5000
 ```
+(In production, use your deployed URL)
 
 3. Upload an image and audio file
 
@@ -58,3 +59,38 @@ http://localhost:5000
 
 - Node.js 14+
 - NPM or Yarn package manager 
+
+## Production Deployment
+
+### Environment Variables
+
+Set `PORT` environment variable (most platforms do this automatically)
+Set `NODE_ENV=production` for optimized production mode
+
+### Deploy to Render
+
+1. Push code to GitHub
+2. Create new Web Service on Render
+3. Connect your repository
+4. Render will auto-detect settings from `render.yaml`
+
+### Deploy to Heroku
+
+1. Install Heroku CLI
+2. Run: `heroku create your-app-name`
+3. Run: `git push heroku main`
+4. Heroku will use the `Procfile` automatically
+
+### Deploy to Railway/Fly.io
+
+1. These platforms auto-detect Node.js apps
+2. They use `npm start` by default
+3. PORT is automatically configured
+
+## Troubleshooting
+
+**Network Error in Production:**
+- Ensure PORT environment variable is set correctly
+- Check that the server binds to `0.0.0.0` (not just localhost)
+- Verify CORS headers are configured
+- Check platform logs for errors 

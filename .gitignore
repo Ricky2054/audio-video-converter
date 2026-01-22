@@ -16,3 +16,5 @@ Thumbs.db
 client_secret.json
 token.json
 link.txt
+.vercel
+.env*.local
