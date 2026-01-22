@@ -62,14 +62,14 @@ async function convertVideo(imagePath, audioPath, outputPath) {
         console.log(`Audio duration: ${audioDuration} seconds`);
 
         // Load and process image
-        console.log('Loading and resizing image...');
-        const targetWidth = 1280;
-        const targetHeight = 720;
+        console.log('Loading and resizing image for YouTube Shorts (1080x1920)...');
+        const targetWidth = 1080;  // YouTube Shorts vertical format
+        const targetHeight = 1920; // 9:16 aspect ratio
         
         // Get image metadata
         const metadata = await sharp(imagePath).metadata();
         
-        // Calculate scaling to fit within 1280x720 while maintaining aspect ratio
+        // Calculate scaling to fit within 1080x1920 while maintaining aspect ratio
         const scale = Math.min(targetWidth / metadata.width, targetHeight / metadata.height);
         const newWidth = Math.floor(metadata.width * scale);
         const newHeight = Math.floor(metadata.height * scale);
@@ -106,8 +106,11 @@ async function convertVideo(imagePath, audioPath, outputPath) {
                     '-tune stillimage',
                     '-c:a aac',
                     '-b:a 192k',
-                    '-pix_fmt yuv420p',
-                    '-preset ultrafast',
+                    '-b:v 5000k',              // Good quality for YouTube Shorts
+                    '-pix_fmt yuv420p',         // Compatibility
+                    '-preset medium',           // Better quality than ultrafast
+                    '-movflags +faststart',     // Optimize for streaming
+                    '-vf scale=1080:1920',      // Ensure exact dimensions
                     `-t ${audioDuration}`,
                     '-shortest'
                 ])

@@ -1,19 +1,22 @@
 # Video Creator
 
-Convert image and audio files into a single MP4 video using a web interface.
+Convert image and audio files into YouTube Shorts ready videos (1080x1920 vertical format).
 
 ## Description
 
-This is a Node.js web application that allows you to upload an image and an audio file to create a video. The image will be displayed for the duration of the audio, creating a simple video file that can be used for various purposes like YouTube uploads.
+This is a Node.js web application that allows you to upload an image and an audio file to create a video optimized for YouTube Shorts. The image will be displayed in vertical format (9:16 aspect ratio) for the duration of the audio.
 
 ## Features
 
 - Web-based interface for easy file uploads
+- **YouTube Shorts optimized** - 1080x1920 vertical format (9:16 aspect ratio)
 - Supports multiple image formats (PNG, JPG, JPEG, GIF, BMP)
 - Supports multiple audio formats (MP3, WAV, M4A, AAC, OGG)
-- Automatic image resizing to 1280x720 (maintains aspect ratio with black borders)
+- Automatic image resizing with black borders to maintain aspect ratio
+- High-quality video encoding (5000k bitrate)
 - Download generated video directly from the browser
 - File size limit: 100MB
+- Perfect for YouTube Shorts, Instagram Reels, TikTok
 
 ## Installation
 
