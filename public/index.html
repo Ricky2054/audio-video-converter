@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Creator - Upload Image & Audio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .upload-section {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9ff;
+        }
+
+        .file-input-label:hover {
+            background: #eef1ff;
+            border-color: #764ba2;
+        }
+
+        .file-input-label.has-file {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .file-name {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #666;
+            word-break: break-all;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .progress {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .progress.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        .message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        .message.active {
+            display: block;
+        }
+
+        .download-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: #10b981;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .download-btn:hover {
+            background: #059669;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Video Creator</h1>
+        <p class="subtitle">Upload an image and audio file to create an MP4 video</p>
+
+        <form id="uploadForm">
+            <div class="upload-section">
+                <label for="imageInput">Cover Image</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="imageInput" name="image" accept="image/*" required>
+                    <label for="imageInput" class="file-input-label" id="imageLabel">
+                        📷 Choose Image (PNG, JPG, GIF, BMP)
+                    </label>
+                </div>
+                <div class="file-name" id="imageName"></div>
+            </div>
+
+            <div class="upload-section">
+                <label for="audioInput">Audio File</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="audioInput" name="audio" accept="audio/*" required>
+                    <label for="audioInput" class="file-input-label" id="audioLabel">
+                        🎵 Choose Audio (MP3, WAV, M4A, AAC, OGG)
+                    </label>
+                </div>
+                <div class="file-name" id="audioName"></div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">Create Video</button>
+        </form>
+
+        <div class="progress" id="progress">
+            <div class="spinner"></div>
+            <p>Creating your video... This may take a minute.</p>
+        </div>
+
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const audioInput = document.getElementById('audioInput');
+        const imageLabel = document.getElementById('imageLabel');
+        const audioLabel = document.getElementById('audioLabel');
+        const imageName = document.getElementById('imageName');
+        const audioName = document.getElementById('audioName');
+        const uploadForm = document.getElementById('uploadForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const progress = document.getElementById('progress');
+        const message = document.getElementById('message');
+
+        imageInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                imageName.textContent = '✓ ' + this.files[0].name;
+                imageLabel.classList.add('has-file');
+            }
+        });
+
+        audioInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                audioName.textContent = '✓ ' + this.files[0].name;
+                audioLabel.classList.add('has-file');
+            }
+        });
+
+        uploadForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData();
+            formData.append('image', imageInput.files[0]);
+            formData.append('audio', audioInput.files[0]);
+
+            submitBtn.disabled = true;
+            progress.classList.add('active');
+            message.classList.remove('active');
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                progress.classList.remove('active');
+                submitBtn.disabled = false;
+
+                if (response.ok) {
+                    message.className = 'message success active';
+                    message.innerHTML = `
+                        <p><strong>Success!</strong> ${data.message}</p>
+                        <a href="${data.download_url}" class="download-btn">📥 Download Video</a>
+                    `;
+                } else {
+                    message.className = 'message error active';
+                    message.textContent = '❌ Error: ' + data.error;
+                }
+            } catch (error) {
+                progress.classList.remove('active');
+                submitBtn.disabled = false;
+                message.className = 'message error active';
+                message.textContent = '❌ Network error. Please try again.';
+            }
+        });
+    </script>
+</body>
+</html>
