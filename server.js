@@ -16,7 +16,8 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.static('public'));
-app.use(express.json());
+app.use(express.json({ limit: '100mb' }));
+app.use(express.urlencoded({ limit: '100mb', extended: true }));
 
 // CORS configuration for production
 app.use((req, res, next) => {
@@ -156,13 +157,22 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Health check endpoint for Render
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 app.post('/upload', upload.fields([
     { name: 'image', maxCount: 1 },
     { name: 'audio', maxCount: 1 }
 ]), async (req, res) => {
     try {
+        console.log('Upload request received');
+        console.log('Request files:', req.files ? Object.keys(req.files) : 'none');
+        
         // Check if files are present
         if (!req.files || !req.files.image || !req.files.audio) {
+            console.error('Missing files:', { hasFiles: !!req.files, hasImage: !!req.files?.image, hasAudio: !!req.files?.audio });
             return res.status(400).json({ error: 'Both image and audio files are required' });
         }
 

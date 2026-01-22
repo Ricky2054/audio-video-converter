@@ -290,7 +290,11 @@
                 progress.classList.remove('active');
                 submitBtn.disabled = false;
                 message.className = 'message error active';
-                message.textContent = '❌ Network error. Please try again.';
+                message.innerHTML = `
+                    ❌ Network error. Please try again.<br>
+                    <small style="font-size: 11px;">Details: ${error.message}</small>
+                `;
+                console.error('Upload error:', error);
             }
         });
     </script>
